@@ -1,0 +1,59 @@
+/**
+ * Design tokens extracted from the approved CorpersLink design spec.
+ * Keep colors/spacing/radii here — components should never hardcode hex
+ * values so a future rebrand only touches this file.
+ */
+:root {
+  /* Brand colors */
+  --cl-color-navy: #1f3a5f;
+  --cl-color-navy-deep: #1a2b4a;
+  --cl-color-green: #16815a;
+  --cl-color-green-light: #4fcf9c;
+  --cl-color-green-tint: #e2f1eb;
+  --cl-color-green-tint-border: #bfe0d2;
+
+  /* Text */
+  --cl-color-text: #1a202c;
+  --cl-color-text-muted: #5a6472;
+  --cl-color-text-subtle: #8a94a3;
+  --cl-color-text-inverse: #ffffff;
+  --cl-color-text-inverse-muted: #c4d0e2;
+
+  /* Surfaces & borders */
+  --cl-color-bg: #ffffff;
+  --cl-color-bg-muted: #f4f6f9;
+  --cl-color-border: #e2e7ef;
+
+  /* State colors */
+  --cl-color-warning-bg: #fcf6ea;
+  --cl-color-warning-border: #ebd9b4;
+  --cl-color-warning-text: #8a5b15;
+  --cl-color-danger: #b54545;
+  --cl-color-danger-bg: #fbefef;
+
+  /* Typography */
+  --cl-font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Radii */
+  --cl-radius-sm: 8px;
+  --cl-radius-md: 12px;
+  --cl-radius-lg: 16px;
+  --cl-radius-xl: 20px;
+  --cl-radius-pill: 999px;
+
+  /* Shadows */
+  --cl-shadow-cta: 0 4px 14px rgba(22, 129, 90, 0.3);
+  --cl-shadow-cta-strong: 0 4px 14px rgba(22, 129, 90, 0.4);
+  --cl-shadow-card: 0 6px 20px rgba(31, 58, 95, 0.08);
+  --cl-shadow-hero-image: 0 20px 50px rgba(0, 0, 0, 0.35);
+
+  /* Layout */
+  --cl-container-max: 1280px;
+  --cl-header-height: 72px;
+
+  /* Motion */
+  --cl-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --cl-duration-fast: 150ms;
+  --cl-duration-base: 250ms;
+  --cl-duration-slow: 450ms;
+}
