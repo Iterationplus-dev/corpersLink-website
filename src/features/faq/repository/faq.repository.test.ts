@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import type { ApiClient } from '@/core/api/client';
 import { ApiEndpoints } from '@/core/constants/api-endpoints';
-import type { FaqContentDTO } from '@/features/faq/types';
+import type { FaqItemDTO } from '@/features/faq/types';
 
 import { FaqRepository } from './faq.repository.impl';
 
@@ -18,14 +18,14 @@ function createFakeClient(overrides: Partial<ApiClient> = {}): ApiClient {
 }
 
 describe('FaqRepository', () => {
-  it('getContent fetches the faq endpoint and maps it', async () => {
-    const dto: FaqContentDTO = { headline: 'FAQ', subheadline: 'sub', items: [] };
-    const get = vi.fn().mockResolvedValue(dto);
+  it('getItems fetches the faq list endpoint and maps every item', async () => {
+    const dtos: FaqItemDTO[] = [{ id: 1, question: 'Q?', answer: 'A.', category: 'booking' }];
+    const get = vi.fn().mockResolvedValue(dtos);
     const repository = new FaqRepository(createFakeClient({ get }));
 
-    const content = await repository.getContent();
+    const items = await repository.getItems();
 
-    expect(get).toHaveBeenCalledWith(ApiEndpoints.faq.content);
-    expect(content.headline).toBe('FAQ');
+    expect(get).toHaveBeenCalledWith(ApiEndpoints.faq.list);
+    expect(items).toEqual(dtos);
   });
 });

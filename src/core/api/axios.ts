@@ -1,6 +1,13 @@
-import axios, { type AxiosInstance } from 'axios';
+import axios, { isAxiosError, type AxiosInstance } from 'axios';
 
+import { getToken, clearToken } from '@/core/auth/token-storage';
 import { env } from '@/core/config/env';
+import { HttpStatus } from '@/core/constants/http-status';
+
+/** Fired on any real 401 so app-level code (main.ts) can react without this
+ * module importing the Pinia store directly (that would be circular: the
+ * store -> service -> repository -> client -> axios chain loops back here). */
+export const SESSION_EXPIRED_EVENT = 'corperslink:session-expired';
 
 /**
  * Raw axios instance used only when talking to the real backend
@@ -18,12 +25,23 @@ export function createAxiosInstance(): AxiosInstance {
   });
 
   instance.interceptors.request.use((config) => {
-    const token = localStorage.getItem('corperslink.auth.token');
+    const token = getToken();
     if (token) {
       config.headers.set('Authorization', `Bearer ${token}`);
     }
     return config;
   });
+
+  instance.interceptors.response.use(
+    (response) => response,
+    (error: unknown) => {
+      if (isAxiosError(error) && error.response?.status === HttpStatus.UNAUTHORIZED) {
+        clearToken();
+        window.dispatchEvent(new CustomEvent(SESSION_EXPIRED_EVENT));
+      }
+      return Promise.reject(error);
+    },
+  );
 
   return instance;
 }

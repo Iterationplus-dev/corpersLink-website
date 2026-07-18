@@ -24,7 +24,7 @@ export interface ApiClient {
   post<TData>(url: string, body?: unknown, config?: ApiRequestConfig): Promise<TData>;
   put<TData>(url: string, body?: unknown, config?: ApiRequestConfig): Promise<TData>;
   patch<TData>(url: string, body?: unknown, config?: ApiRequestConfig): Promise<TData>;
-  delete<TData>(url: string, config?: ApiRequestConfig): Promise<TData>;
+  delete<TData>(url: string, body?: unknown, config?: ApiRequestConfig): Promise<TData>;
 }
 
 class HttpApiClient implements ApiClient {
@@ -37,14 +37,18 @@ class HttpApiClient implements ApiClient {
     config?: ApiRequestConfig,
   ): Promise<TData> {
     try {
-      const response = await this.axiosInstance.request<ApiSuccessResponse<TData>>({
+      // The real backend returns the payload directly — no `{data: ...}`
+      // envelope — and returns literal JSON `null` for many "done, nothing
+      // to return" actions (logout, resend-otp, etc.), which this passes
+      // through as-is rather than drilling into a `.data` that doesn't exist.
+      const response = await this.axiosInstance.request<TData>({
         method,
         url,
         data: body,
         params: config?.params,
         headers: config?.headers,
       });
-      return response.data.data;
+      return response.data;
     } catch (error) {
       throw normalizeError(error);
     }
@@ -66,8 +70,8 @@ class HttpApiClient implements ApiClient {
     return this.request<TData>('patch', url, body, config);
   }
 
-  delete<TData>(url: string, config?: ApiRequestConfig): Promise<TData> {
-    return this.request<TData>('delete', url, undefined, config);
+  delete<TData>(url: string, body?: unknown, config?: ApiRequestConfig): Promise<TData> {
+    return this.request<TData>('delete', url, body, config);
   }
 }
 
@@ -105,8 +109,8 @@ class MockApiClient implements ApiClient {
     return this.request<TData>('patch', url, body, config);
   }
 
-  delete<TData>(url: string, config?: ApiRequestConfig): Promise<TData> {
-    return this.request<TData>('delete', url, undefined, config);
+  delete<TData>(url: string, body?: unknown, config?: ApiRequestConfig): Promise<TData> {
+    return this.request<TData>('delete', url, body, config);
   }
 }
 

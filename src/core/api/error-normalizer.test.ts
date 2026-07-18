@@ -57,11 +57,11 @@ describe('normalizeError', () => {
     expect(result.kind).toBe('timeout');
   });
 
-  it('maps an axios 401 response into an unauthorized AppError', () => {
+  it('maps a real-backend axios 401 response into an unauthorized AppError', () => {
     const axiosError = new AxiosError('Unauthorized');
     axiosError.response = {
       status: 401,
-      data: { success: false, message: 'Session expired', code: 'UNAUTHORIZED' },
+      data: { error: { code: 'unauthenticated', message: 'Session expired' } },
       statusText: 'Unauthorized',
       headers: {},
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -71,6 +71,84 @@ describe('normalizeError', () => {
     const result = normalizeError(axiosError);
     expect(result.kind).toBe('unauthorized');
     expect(result.message).toBe('Session expired');
+    expect(result.code).toBe('unauthenticated');
+  });
+
+  it('maps a real-backend 422 response into a validation AppError, grouping fields by name', () => {
+    const axiosError = new AxiosError('Unprocessable Entity');
+    axiosError.response = {
+      status: 422,
+      data: {
+        error: {
+          code: 'validation_error',
+          message: 'The email field is required.',
+          fields: [
+            { field: 'email', message: 'The email field is required.' },
+            { field: 'phone', message: 'The phone field is invalid.' },
+            { field: 'phone', message: 'The phone field must be unique.' },
+          ],
+        },
+      },
+      statusText: 'Unprocessable Entity',
+      headers: {},
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      config: {} as any,
+    };
+
+    const result = normalizeError(axiosError);
+    expect(result.kind).toBe('validation');
+    expect(result.fieldErrors).toEqual({
+      email: ['The email field is required.'],
+      phone: ['The phone field is invalid.', 'The phone field must be unique.'],
+    });
+  });
+
+  it('maps a real-backend 409 response into a conflict AppError', () => {
+    const axiosError = new AxiosError('Conflict');
+    axiosError.response = {
+      status: 409,
+      data: { error: { code: 'seat_unavailable', message: 'That seat was just taken.' } },
+      statusText: 'Conflict',
+      headers: {},
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      config: {} as any,
+    };
+
+    const result = normalizeError(axiosError);
+    expect(result.kind).toBe('conflict');
+    expect(result.code).toBe('seat_unavailable');
+  });
+
+  it('maps a real-backend 410 response into a gone AppError', () => {
+    const axiosError = new AxiosError('Gone');
+    axiosError.response = {
+      status: 410,
+      data: { error: { code: 'hold_expired', message: 'This seat hold has expired.' } },
+      statusText: 'Gone',
+      headers: {},
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      config: {} as any,
+    };
+
+    const result = normalizeError(axiosError);
+    expect(result.kind).toBe('gone');
+    expect(result.code).toBe('hold_expired');
+  });
+
+  it('falls back to the default message when a real-backend error response has no body', () => {
+    const axiosError = new AxiosError('Server Error');
+    axiosError.response = {
+      status: 500,
+      data: undefined as never,
+      statusText: 'Internal Server Error',
+      headers: {},
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      config: {} as any,
+    };
+
+    const result = normalizeError(axiosError);
+    expect(result.kind).toBe('server');
+    expect(result.message).toBe('Something went wrong on our end. Please try again shortly.');
   });
 
   it('falls back to an unknown AppError for unrecognized error shapes', () => {

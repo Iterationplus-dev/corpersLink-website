@@ -1,8 +1,5 @@
 <script setup lang="ts">
 import BaseButton from '@/components/ui/BaseButton.vue';
-import { useNewsletterForm } from '@/features/landing/composables/useNewsletterForm';
-
-const { form, isSubmitting, isSuccess, fieldErrors, generalError, submit } = useNewsletterForm();
 </script>
 
 <template>
@@ -11,38 +8,13 @@ const { form, isSubmitting, isSuccess, fieldErrors, generalError, submit } = use
       <div class="cta-banner__copy">
         <h2 class="cta-banner__title">Seats fill fast in camp season.</h2>
         <p class="cta-banner__subtitle">
-          Leave your email and we'll notify you the moment your institution's booking window opens —
-          takes less than five minutes to register once it does.
+          Create your free account now — booking takes less than five minutes.
         </p>
       </div>
 
-      <form class="cta-banner__form" novalidate @submit.prevent="submit">
-        <div class="cta-banner__field-group">
-          <label for="cta-email" class="visually-hidden">Email address</label>
-          <input
-            id="cta-email"
-            v-model="form.email"
-            type="email"
-            name="email"
-            autocomplete="email"
-            placeholder="you@example.com"
-            class="cta-banner__input"
-            :class="{ 'is-invalid': fieldErrors.email }"
-            :aria-invalid="Boolean(fieldErrors.email)"
-            aria-describedby="cta-email-feedback"
-            required
-          />
-          <BaseButton type="submit" variant="secondary" size="md" :loading="isSubmitting">
-            Notify me
-          </BaseButton>
-        </div>
-
-        <p id="cta-email-feedback" class="cta-banner__feedback" role="status">
-          <span v-if="isSuccess" class="is-success">You're on the list — watch your inbox.</span>
-          <span v-else-if="fieldErrors.email" class="is-error">{{ fieldErrors.email[0] }}</span>
-          <span v-else-if="generalError" class="is-error">{{ generalError }}</span>
-        </p>
-      </form>
+      <BaseButton to="/register" variant="secondary" size="lg" class="cta-banner__cta">
+        Create account
+      </BaseButton>
     </div>
   </section>
 </template>
@@ -77,55 +49,19 @@ const { form, isSubmitting, isSuccess, fieldErrors, generalError, submit } = use
 }
 
 .cta-banner__subtitle {
-  font-size: 0.95rem;
+  font-size: 0.97rem;
   line-height: 1.55;
   color: #d7eee3;
   max-width: 56ch;
 }
 
-.cta-banner__form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+.cta-banner__cta {
+  flex-shrink: 0;
+  border-radius: var(--cl-radius-pill);
 }
 
-.cta-banner__field-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.cta-banner__input {
-  height: 48px;
-  border-radius: var(--cl-radius-md);
-  border: none;
-  padding: 0 1rem;
-  font-size: 0.95rem;
-  font-family: inherit;
-  color: var(--cl-color-text);
-  background: var(--cl-color-bg);
-  min-width: 0;
-  flex: 1;
-}
-
-.cta-banner__input.is-invalid {
-  outline: 2px solid #ffd7d7;
-}
-
-.cta-banner__feedback {
-  min-height: 1.25rem;
-  font-size: 0.85rem;
-  margin: 0;
-}
-
-.cta-banner__feedback .is-success {
-  color: #eaffff;
-  font-weight: 700;
-}
-
-.cta-banner__feedback .is-error {
-  color: #ffe1e1;
-  font-weight: 600;
+.cta-banner__cta.base-button--secondary {
+  color: var(--cl-color-green);
 }
 
 @media (min-width: 720px) {
@@ -133,15 +69,6 @@ const { form, isSubmitting, isSuccess, fieldErrors, generalError, submit } = use
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-  }
-
-  .cta-banner__form {
-    flex-shrink: 0;
-    width: 380px;
-  }
-
-  .cta-banner__field-group {
-    flex-direction: row;
   }
 }
 </style>

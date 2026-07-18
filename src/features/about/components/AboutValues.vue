@@ -19,7 +19,7 @@ const ICON_PATHS: Record<AboutValueIconKey, string> = {
             <path
               :d="ICON_PATHS[value.iconKey]"
               fill="none"
-              stroke="#16815A"
+              stroke="var(--cl-color-green)"
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -45,7 +45,7 @@ const ICON_PATHS: Record<AboutValueIconKey, string> = {
 
 .about-values__card {
   background: var(--cl-color-bg-muted);
-  border-radius: var(--cl-radius-lg);
+  border-radius: var(--cl-radius-card);
   padding: 1.625rem;
   display: flex;
   flex-direction: column;

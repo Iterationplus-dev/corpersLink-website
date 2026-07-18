@@ -5,6 +5,7 @@ import { useRoute } from 'vue-router';
 import BaseButton from '@/components/ui/BaseButton.vue';
 import LogoMark from '@/components/ui/LogoMark.vue';
 import type { NavLink } from '@/features/site/types';
+import { useAuthStore } from '@/stores/auth.store';
 import { useUiStore } from '@/stores/ui.store';
 
 interface Props {
@@ -13,6 +14,7 @@ interface Props {
 
 const props = defineProps<Props>();
 const uiStore = useUiStore();
+const authStore = useAuthStore();
 const route = useRoute();
 
 const isMobileNavOpen = computed(() => uiStore.isMobileNavOpen);
@@ -47,10 +49,13 @@ function handleNavClick(): void {
       </nav>
 
       <div class="app-header__actions">
-        <span class="app-header__sign-in" aria-disabled="true" title="Coming soon">Sign in</span>
-        <BaseButton :to="{ path: '/', hash: '#book' }" variant="primary" size="md"
-          >Book a seat</BaseButton
-        >
+        <template v-if="authStore.isAuthenticated">
+          <router-link to="/dashboard" class="app-header__sign-in">Dashboard</router-link>
+        </template>
+        <template v-else>
+          <router-link to="/signin" class="app-header__sign-in">Sign in</router-link>
+        </template>
+        <BaseButton to="/institutions" variant="primary" size="md">Book a seat</BaseButton>
       </div>
 
       <button
@@ -83,14 +88,13 @@ function handleNavClick(): void {
         >
           {{ link.label }}
         </router-link>
-        <span class="app-header__mobile-link" aria-disabled="true" title="Coming soon"
-          >Sign in</span
-        >
-        <BaseButton
-          :to="{ path: '/', hash: '#book' }"
-          variant="primary"
-          size="lg"
+        <router-link
+          :to="authStore.isAuthenticated ? '/dashboard' : '/signin'"
+          class="app-header__mobile-link"
           @click="handleNavClick"
+          >{{ authStore.isAuthenticated ? 'Dashboard' : 'Sign in' }}</router-link
+        >
+        <BaseButton to="/institutions" variant="primary" size="lg" @click="handleNavClick"
           >Book a seat</BaseButton
         >
       </nav>
@@ -171,8 +175,6 @@ function handleNavClick(): void {
   font-weight: 700;
   color: var(--cl-color-navy);
   padding: 0.625rem 1rem;
-  opacity: 0.6;
-  cursor: not-allowed;
 }
 
 .app-header__toggle {

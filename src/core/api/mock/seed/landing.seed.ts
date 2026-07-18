@@ -13,25 +13,25 @@ import type {
 
 export const heroStatsSeed: HeroStatDTO[] = [
   {
-    id: 'seats-booked',
-    label: 'Seats booked this season',
+    id: 'corps-members-moved',
+    label: 'Corps members moved safely',
     value: 12480,
-    value_suffix: null,
+    value_suffix: '+',
     display_format: 'number',
   },
   {
-    id: 'participating-institutions',
-    label: 'Participating institutions',
-    value: 64,
-    value_suffix: null,
+    id: 'vetted-transporters',
+    label: 'Vetted, institution-approved transporters',
+    value: 100,
+    value_suffix: '%',
     display_format: 'number',
   },
   {
-    id: 'average-rating',
-    label: 'Average rider rating',
-    value: 4.8,
-    value_suffix: null,
-    display_format: 'rating',
+    id: 'support-availability',
+    label: 'Support before and on travel day',
+    value: 0,
+    value_suffix: '24/7',
+    display_format: 'text',
   },
 ];
 
@@ -64,7 +64,7 @@ export const landingHeroContentSeed: LandingHeroContentDTO = {
   headline: 'Book your seat to camp in minutes.',
   subheadline:
     "Reserve a verified seat on your institution's NYSC camp transport, pay securely, and get your receipt instantly.",
-  primary_cta_label: "Get started — it's free",
+  primary_cta_label: 'Create a free account',
   secondary_cta_label: 'See how it works',
   hero_image_url: heroImageUrl,
   hero_image_alt:

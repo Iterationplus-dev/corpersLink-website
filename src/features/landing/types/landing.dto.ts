@@ -9,7 +9,7 @@ export interface HeroStatDTO {
   label: string;
   value: number;
   value_suffix: string | null;
-  display_format: 'number' | 'decimal' | 'rating';
+  display_format: 'number' | 'decimal' | 'rating' | 'text';
 }
 
 export interface HowItWorksStepDTO {

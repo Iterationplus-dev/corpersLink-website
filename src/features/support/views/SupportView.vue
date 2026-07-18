@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import BaseButton from '@/components/ui/BaseButton.vue';
 import ErrorState from '@/components/ui/ErrorState.vue';
 import PageSkeleton from '@/components/ui/PageSkeleton.vue';
 import { useSupportPage } from '@/features/support/composables/useSupportPage';
@@ -20,7 +19,9 @@ const { data, isLoading, hasError, isReady, error, retry } = useSupportPage();
           <ul class="support-view__faq-preview">
             <li v-for="question in data.faqPreview" :key="question" class="support-view__faq-item">
               <span>{{ question }}</span>
-              <BaseButton to="/faq" variant="ghost" size="md">View</BaseButton>
+              <router-link to="/faq" class="support-view__faq-chevron" aria-label="View in FAQ"
+                >›</router-link
+              >
             </li>
           </ul>
         </div>
@@ -35,10 +36,10 @@ const { data, isLoading, hasError, isReady, error, retry } = useSupportPage();
           </div>
 
           <div class="support-view__contact-card">
-            <div class="support-view__contact-title">
-              {{ data.contact.institutionName }} transport desk
-            </div>
-            <p class="support-view__contact-hours">{{ data.contact.hours }}</p>
+            <div class="support-view__contact-title">Institution transport desk</div>
+            <p class="support-view__contact-hours">
+              {{ data.contact.institutionName }} · {{ data.contact.hours }}
+            </p>
             <p class="support-view__contact-detail">{{ data.contact.phone }}</p>
             <p class="support-view__contact-detail">{{ data.contact.email }}</p>
           </div>
@@ -112,7 +113,7 @@ const { data, isLoading, hasError, isReady, error, retry } = useSupportPage();
   background: var(--cl-color-bg);
   border: 1px solid var(--cl-color-border);
   border-radius: var(--cl-radius-md);
-  padding: 1rem 1.125rem;
+  padding: 1.125rem 1.25rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -120,6 +121,15 @@ const { data, isLoading, hasError, isReady, error, retry } = useSupportPage();
   font-size: 0.9375rem;
   font-weight: 600;
   color: var(--cl-color-text);
+}
+
+.support-view__faq-chevron {
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--cl-color-navy);
+  text-decoration: none;
 }
 
 .support-view__aside {
@@ -149,14 +159,15 @@ const { data, isLoading, hasError, isReady, error, retry } = useSupportPage();
 }
 
 .support-view__chat-cta {
-  align-self: flex-start;
+  width: 100%;
   margin-top: 0.5rem;
-  height: 40px;
+  height: 44px;
   padding: 0 1.125rem;
   border-radius: var(--cl-radius-md);
   background: var(--cl-color-green);
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   font-size: 0.875rem;
   font-weight: 700;
   opacity: 0.85;

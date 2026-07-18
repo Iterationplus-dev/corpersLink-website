@@ -25,7 +25,13 @@ const { data, isLoading, hasError, isReady, error, retry } = useFaqPage();
             <div class="faq-view__support-title">Still stuck?</div>
             <div class="faq-view__support-sub">Chat with support — average reply in 3 minutes</div>
           </div>
-          <BaseButton to="/support" variant="primary" size="md">Contact support</BaseButton>
+          <BaseButton
+            to="/support"
+            variant="primary"
+            size="md"
+            class="faq-view__support-btn"
+            >Start chat</BaseButton
+          >
         </div>
       </div>
     </template>
@@ -104,6 +110,10 @@ const { data, isLoading, hasError, isReady, error, retry } = useFaqPage();
 .faq-view__support-sub {
   font-size: 0.8125rem;
   color: var(--cl-color-text-inverse-muted);
+}
+
+.faq-view__support-btn {
+  border-radius: var(--cl-radius-pill);
 }
 
 .faq-view__error {

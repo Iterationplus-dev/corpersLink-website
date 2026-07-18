@@ -15,7 +15,10 @@ const { data, isLoading, hasError, isReady, error, retry } = useTestimonialsPage
       <section class="testimonials-view__heading">
         <p class="testimonials-view__eyebrow">{{ data.eyebrow }}</p>
         <h1 class="testimonials-view__headline">{{ data.headline }}</h1>
-        <p class="testimonials-view__rating">{{ data.ratingSummary }}</p>
+        <p class="testimonials-view__rating">
+          <span class="testimonials-view__rating-stars" aria-hidden="true">★★★★★</span>
+          <span>{{ data.ratingSummary }}</span>
+        </p>
       </section>
 
       <section class="testimonials-view__grid" aria-label="Rider testimonials">
@@ -86,8 +89,18 @@ const { data, isLoading, hasError, isReady, error, retry } = useTestimonialsPage
 }
 
 .testimonials-view__rating {
-  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.90625rem;
   color: var(--cl-color-text-muted);
+}
+
+.testimonials-view__rating-stars {
+  font-size: 0.875rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #b7791f;
 }
 
 .testimonials-view__grid {

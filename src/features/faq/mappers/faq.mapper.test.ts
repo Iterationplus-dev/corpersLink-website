@@ -1,26 +1,22 @@
 import { describe, expect, it } from 'vitest';
 
-import type { FaqContentDTO } from '@/features/faq/types';
+import type { FaqItemDTO } from '@/features/faq/types';
 
-import { mapFaqContent, mapFaqItem } from './faq.mapper';
+import { buildFaqContent, mapFaqItem } from './faq.mapper';
 
 describe('mapFaqItem', () => {
-  it('maps question/answer unchanged', () => {
-    expect(mapFaqItem({ question: 'Q?', answer: 'A.' })).toEqual({ question: 'Q?', answer: 'A.' });
+  it('maps every field unchanged', () => {
+    const dto: FaqItemDTO = { id: 1, question: 'Q?', answer: 'A.', category: 'booking' };
+    expect(mapFaqItem(dto)).toEqual(dto);
   });
 });
 
-describe('mapFaqContent', () => {
-  it('maps headline/subheadline and the nested items array', () => {
-    const dto: FaqContentDTO = {
-      headline: 'FAQ',
-      subheadline: 'Answered',
-      items: [{ question: 'Q1?', answer: 'A1.' }],
-    };
+describe('buildFaqContent', () => {
+  it('wraps the items array with static page copy', () => {
+    const items = [{ id: 1, question: 'Q1?', answer: 'A1.', category: 'booking' }];
+    const content = buildFaqContent(items);
 
-    const model = mapFaqContent(dto);
-
-    expect(model.headline).toBe('FAQ');
-    expect(model.items).toEqual([{ question: 'Q1?', answer: 'A1.' }]);
+    expect(content.headline).toBe('Frequently asked questions');
+    expect(content.items).toBe(items);
   });
 });

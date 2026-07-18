@@ -10,6 +10,10 @@ import type {
 } from '@/features/landing/types';
 
 function formatStatValue(dto: HeroStatDTO): string {
+  if (dto.display_format === 'text') {
+    return dto.value_suffix ?? '';
+  }
+
   const formatted =
     dto.display_format === 'decimal'
       ? dto.value.toFixed(1)

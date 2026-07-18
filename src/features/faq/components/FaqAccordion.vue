@@ -18,7 +18,7 @@ function panelId(index: number): string {
 
 <template>
   <div class="faq-accordion">
-    <div v-for="(item, index) in props.items" :key="item.question" class="faq-accordion__item">
+    <div v-for="(item, index) in props.items" :key="item.id" class="faq-accordion__item">
       <button
         type="button"
         class="faq-accordion__trigger"
@@ -80,7 +80,7 @@ function panelId(index: number): string {
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background: var(--cl-color-bg-muted);
+  background: color-mix(in srgb, var(--cl-color-navy) 10%, var(--cl-color-bg-muted));
   color: var(--cl-color-navy);
   display: flex;
   align-items: center;

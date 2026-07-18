@@ -3,6 +3,8 @@ export type AppErrorKind =
   | 'unauthorized'
   | 'forbidden'
   | 'not_found'
+  | 'conflict'
+  | 'gone'
   | 'rate_limited'
   | 'server'
   | 'network'

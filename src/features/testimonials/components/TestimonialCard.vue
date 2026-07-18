@@ -30,7 +30,7 @@ defineProps<{ testimonial: Testimonial }>();
 <style scoped>
 .testimonial-card {
   border: 1px solid var(--cl-color-border);
-  border-radius: var(--cl-radius-lg);
+  border-radius: var(--cl-radius-card);
   padding: 1.625rem;
   display: flex;
   flex-direction: column;
@@ -39,10 +39,10 @@ defineProps<{ testimonial: Testimonial }>();
 }
 
 .testimonial-card__stars {
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   font-weight: 800;
   letter-spacing: 2px;
-  color: var(--cl-color-warning-text);
+  color: #b7791f;
 }
 
 .testimonial-card__quote {

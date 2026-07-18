@@ -72,7 +72,7 @@ defineProps<{ steps: HowItWorksStep[] }>();
 
 .how-it-works__card {
   border: 1px solid var(--cl-color-border);
-  border-radius: var(--cl-radius-lg);
+  border-radius: var(--cl-radius-card);
   padding: 1.625rem;
   display: flex;
   flex-direction: column;

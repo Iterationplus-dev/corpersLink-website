@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { watch } from 'vue';
 
+import CookieConsentBanner from '@/components/ui/CookieConsentBanner.vue';
 import OfflineBanner from '@/components/ui/OfflineBanner.vue';
 import { useOnlineStatus } from '@/composables/useOnlineStatus';
 import { useUiStore } from '@/stores/ui.store';
@@ -20,4 +21,5 @@ watch(
 <template>
   <OfflineBanner v-if="uiStore.isOffline" />
   <router-view />
+  <CookieConsentBanner />
 </template>

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import heroImageWebp from '@/assets/illustrations/hero-corps-member.webp';
 import BaseButton from '@/components/ui/BaseButton.vue';
 import type { HeroStat, LandingHeroContent } from '@/features/landing/types';
 
@@ -17,10 +16,12 @@ defineProps<{ content: LandingHeroContent; stats: HeroStat[] }>();
         <p class="hero__subheadline">{{ content.subheadline }}</p>
 
         <div class="hero__ctas">
-          <BaseButton href="#book" variant="primary" size="lg">{{
+          <BaseButton to="/register" variant="primary" size="lg">{{
             content.primaryCtaLabel
           }}</BaseButton>
-          <BaseButton href="#how-it-works" variant="outline-inverse" size="lg">{{
+          <!-- No dedicated /welcome onboarding route exists yet — routes to
+               /register per the current design guidance until one ships. -->
+          <BaseButton to="/register" variant="outline-inverse" size="lg">{{
             content.secondaryCtaLabel
           }}</BaseButton>
         </div>
@@ -29,18 +30,15 @@ defineProps<{ content: LandingHeroContent; stats: HeroStat[] }>();
       </div>
 
       <div class="hero__media">
-        <picture>
-          <source :srcset="heroImageWebp" type="image/webp" />
-          <img
-            :src="content.heroImageUrl"
-            :alt="content.heroImageAlt"
-            loading="lazy"
-            decoding="async"
-            width="718"
-            height="537"
-            class="hero__image"
-          />
-        </picture>
+        <img
+          :src="content.heroImageUrl"
+          :alt="content.heroImageAlt"
+          loading="lazy"
+          decoding="async"
+          width="724"
+          height="543"
+          class="hero__image"
+        />
       </div>
     </div>
   </section>

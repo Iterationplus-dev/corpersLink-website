@@ -1,5 +1,5 @@
-import type { FaqContent } from '@/features/faq/types';
+import type { FaqItem } from '@/features/faq/types';
 
 export interface IFaqRepository {
-  getContent(): Promise<FaqContent>;
+  getItems(): Promise<FaqItem[]>;
 }

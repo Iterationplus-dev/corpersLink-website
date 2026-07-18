@@ -3,9 +3,12 @@ import ErrorState from '@/components/ui/ErrorState.vue';
 import { useLandingPage } from '@/features/landing/composables/useLandingPage';
 
 import CtaBanner from '../components/CtaBanner.vue';
+import FaqPreviewSection from '../components/FaqPreviewSection.vue';
 import HeroSection from '../components/HeroSection.vue';
 import HowItWorksSection from '../components/HowItWorksSection.vue';
 import LandingSkeleton from '../components/LandingSkeleton.vue';
+import TestimonialsPreviewSection from '../components/TestimonialsPreviewSection.vue';
+import WhyCorpersLinkSection from '../components/WhyCorpersLinkSection.vue';
 
 const { hero, stats, steps, isLoading, hasError, isReady, error, retry } = useLandingPage();
 </script>
@@ -15,6 +18,9 @@ const { hero, stats, steps, isLoading, hasError, isReady, error, retry } = useLa
     <template v-if="isReady && hero">
       <HeroSection :content="hero" :stats="stats" />
       <HowItWorksSection :steps="steps" />
+      <WhyCorpersLinkSection />
+      <TestimonialsPreviewSection />
+      <FaqPreviewSection />
       <CtaBanner />
     </template>
 

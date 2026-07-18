@@ -1,10 +1,6 @@
 export interface FaqItemDTO {
+  id: number;
   question: string;
   answer: string;
-}
-
-export interface FaqContentDTO {
-  headline: string;
-  subheadline: string;
-  items: FaqItemDTO[];
+  category: string;
 }

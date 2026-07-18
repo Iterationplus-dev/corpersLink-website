@@ -51,6 +51,18 @@ describe('mapHeroStat', () => {
     expect(mapHeroStat(dto).displayValue).toBe('4.8 ★');
   });
 
+  it('renders a text stat verbatim from value_suffix, ignoring value', () => {
+    const dto: HeroStatDTO = {
+      id: 'support-availability',
+      label: 'Support before and on travel day',
+      value: 0,
+      value_suffix: '24/7',
+      display_format: 'text',
+    };
+
+    expect(mapHeroStat(dto).displayValue).toBe('24/7');
+  });
+
   it('preserves id and label unchanged', () => {
     const dto: HeroStatDTO = {
       id: 'institutions',

@@ -10,6 +10,10 @@ import './handlers/testimonials.handlers';
 import './handlers/faq.handlers';
 import './handlers/support.handlers';
 import './handlers/legal.handlers';
+import './handlers/auth.handlers';
+import './handlers/institutions.handlers';
+import './handlers/booking.handlers';
+import './handlers/account.handlers';
 
 export async function dispatchMockRequest(
   method: HttpMethod,
