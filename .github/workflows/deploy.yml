@@ -42,7 +42,7 @@ jobs:
         run: npm run lint --if-present
 
       - name: Type Check
-        run: npm run type-check --if-present
+        run: npm run typecheck --if-present
 
       - name: Build Production
         env:
@@ -74,6 +74,8 @@ jobs:
           RELEASE="${{ secrets.DEPLOY_PATH }}/releases/$STAMP"
 
           ssh \
+            -i ~/.ssh/github_corperslinkfrontend \
+            -o IdentitiesOnly=yes \
             -p "${{ secrets.SSH_PORT }}" \
             "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
             "mkdir -p $RELEASE/dist"
@@ -81,11 +83,13 @@ jobs:
           rsync \
             -az \
             --delete \
-            -e "ssh -p ${{ secrets.SSH_PORT }}" \
+            -e "ssh -i ~/.ssh/github_corperslinkfrontend -o IdentitiesOnly=yes -p ${{ secrets.SSH_PORT }}" \
             dist/ \
             "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:$RELEASE/dist/"
 
           ssh \
+            -i ~/.ssh/github_corperslinkfrontend \
+            -o IdentitiesOnly=yes \
             -p "${{ secrets.SSH_PORT }}" \
             "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" << EOF
 
