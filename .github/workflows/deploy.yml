@@ -9,6 +9,9 @@ concurrency:
   group: deploy-frontend
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -26,23 +29,17 @@ jobs:
           node-version: "22"
           cache: npm
 
-      - name: Cache Vite
-        uses: actions/cache@v4
-        with:
-          path: |
-            node_modules/.vite
-          key: vite-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            vite-${{ runner.os }}-
-
       - name: Install Dependencies
-        run: npm ci
+        run: npm ci --no-audit --no-fund
 
       - name: Lint
-        run: npm run lint --if-present
+        run: npm run lint:check
 
       - name: Type Check
-        run: npm run type-check --if-present
+        run: npm run typecheck
+
+      - name: Test
+        run: npm run test
 
       - name: Build Production
         env:
@@ -58,14 +55,27 @@ jobs:
       - name: Configure SSH
         run: |
           mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
 
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
 
-          ssh-keyscan \
-            -p "${{ secrets.SSH_PORT }}" \
-            "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
+          ssh-keyscan -p "${{ secrets.SSH_PORT }}" "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+          cat >> ~/.ssh/config <<EOF
+          Host deploy-target
+            HostName ${{ secrets.SSH_HOST }}
+            User ${{ secrets.SSH_USER }}
+            Port ${{ secrets.SSH_PORT }}
+            IdentityFile ~/.ssh/id_ed25519
+            IdentitiesOnly yes
+            ConnectTimeout 10
+            ControlMaster auto
+            ControlPath ~/.ssh/cm-%r@%h:%p
+            ControlPersist 60s
+          EOF
+          chmod 600 ~/.ssh/config
 
       - name: Upload Release
         run: |
@@ -73,21 +83,16 @@ jobs:
 
           RELEASE="${{ secrets.DEPLOY_PATH }}/releases/$STAMP"
 
-          ssh \
-            -p "${{ secrets.SSH_PORT }}" \
-            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
-            "mkdir -p $RELEASE/dist"
+          ssh deploy-target "mkdir -p $RELEASE/dist"
 
           rsync \
             -az \
             --delete \
-            -e "ssh -p ${{ secrets.SSH_PORT }}" \
+            -e ssh \
             dist/ \
-            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:$RELEASE/dist/"
+            "deploy-target:$RELEASE/dist/"
 
-          ssh \
-            -p "${{ secrets.SSH_PORT }}" \
-            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" << EOF
+          ssh deploy-target << EOF
 
             ln -sfn "$RELEASE" "${{ secrets.DEPLOY_PATH }}/current"
 
@@ -132,4 +137,4 @@ jobs:
             "https://api.cloudflare.com/client/v4/zones/${{ secrets.CF_ZONE_ID }}/purge_cache" \
             -H "Authorization: Bearer ${{ secrets.CF_API_TOKEN }}" \
             -H "Content-Type: application/json" \
-            --data '{"purge_everything":true}'
+            --data '{"files":["https://corperslink.com/","https://corperslink.com/index.html","https://corperslink.com/robots.txt","https://corperslink.com/sitemap.xml"]}'
