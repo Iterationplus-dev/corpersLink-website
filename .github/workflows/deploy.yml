@@ -60,6 +60,13 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
 
+          echo "Key file diagnostics (structure only, never the key material):"
+          echo "  lines: $(wc -l < ~/.ssh/id_ed25519)"
+          echo "  bytes: $(wc -c < ~/.ssh/id_ed25519)"
+          echo "  longest line: $(awk '{ print length }' ~/.ssh/id_ed25519 | sort -rn | head -1)"
+          echo "  has BEGIN marker: $(grep -c 'BEGIN OPENSSH PRIVATE KEY' ~/.ssh/id_ed25519 || true)"
+          echo "  has END marker: $(grep -c 'END OPENSSH PRIVATE KEY' ~/.ssh/id_ed25519 || true)"
+
           ssh-keyscan -p "${{ secrets.SSH_PORT }}" "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
 
