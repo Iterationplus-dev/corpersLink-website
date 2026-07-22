@@ -1,0 +1,135 @@
+name: Deploy CorpersLink Frontend
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: deploy-frontend
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 20
+
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Cache Vite
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules/.vite
+          key: vite-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            vite-${{ runner.os }}-
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint --if-present
+
+      - name: Type Check
+        run: npm run type-check --if-present
+
+      - name: Build Production
+        env:
+          NODE_ENV: production
+          VITE_API_BASE_URL: https://api.corperslink.com
+          VITE_USE_MOCK_API: "false"
+        run: npm run build
+
+      - name: Verify Build
+        run: |
+          test -f dist/index.html
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+
+          chmod 600 ~/.ssh/id_ed25519
+
+          ssh-keyscan \
+            -p "${{ secrets.SSH_PORT }}" \
+            "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Upload Release
+        run: |
+          STAMP=$(date +%Y%m%d%H%M%S)
+
+          RELEASE="${{ secrets.DEPLOY_PATH }}/releases/$STAMP"
+
+          ssh \
+            -p "${{ secrets.SSH_PORT }}" \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
+            "mkdir -p $RELEASE/dist"
+
+          rsync \
+            -az \
+            --delete \
+            -e "ssh -p ${{ secrets.SSH_PORT }}" \
+            dist/ \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:$RELEASE/dist/"
+
+          ssh \
+            -p "${{ secrets.SSH_PORT }}" \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" << EOF
+
+            ln -sfn "$RELEASE" "${{ secrets.DEPLOY_PATH }}/current"
+
+            find "${{ secrets.DEPLOY_PATH }}/releases" \
+                -mindepth 1 \
+                -maxdepth 1 \
+                -type d \
+                | sort -r \
+                | tail -n +6 \
+                | xargs -r rm -rf
+
+          EOF
+
+      - name: Health Check
+        run: |
+          for i in {1..20}; do
+
+            STATUS=$(curl -fsS \
+              -o /dev/null \
+              -w "%{http_code}" \
+              https://corperslink.com || true)
+
+            if [ "$STATUS" = "200" ]; then
+              echo "Frontend is healthy."
+              exit 0
+            fi
+
+            echo "Attempt $i failed (HTTP $STATUS)"
+            sleep 5
+
+          done
+
+          exit 1
+
+      - name: Purge Cloudflare Cache
+        run: |
+          curl \
+            --fail \
+            --silent \
+            --show-error \
+            -X POST \
+            "https://api.cloudflare.com/client/v4/zones/${{ secrets.CF_ZONE_ID }}/purge_cache" \
+            -H "Authorization: Bearer ${{ secrets.CF_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data '{"purge_everything":true}'

@@ -1,3 +1,4 @@
+import { createHead } from '@unhead/vue/client';
 import { createPinia } from 'pinia';
 import { createApp } from 'vue';
 
@@ -11,6 +12,7 @@ const app = createApp(App);
 
 app.use(createPinia());
 app.use(router);
+app.use(createHead());
 
 // Any real 401 clears the stored token (see axios.ts's response interceptor)
 // and fires this — bounce to sign-in rather than leaving the app stuck on a

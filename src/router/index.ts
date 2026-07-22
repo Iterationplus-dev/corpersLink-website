@@ -31,8 +31,3 @@ router.beforeEach(async (to) => {
 
   return true;
 });
-
-router.afterEach((to) => {
-  const title = (to.meta.title as string | undefined) ?? 'CorpersLink';
-  document.title = title;
-});

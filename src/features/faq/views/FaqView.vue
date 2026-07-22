@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useHead } from '@unhead/vue';
+
 import BaseButton from '@/components/ui/BaseButton.vue';
 import ErrorState from '@/components/ui/ErrorState.vue';
 import PageSkeleton from '@/components/ui/PageSkeleton.vue';
@@ -7,6 +9,30 @@ import { useFaqPage } from '@/features/faq/composables/useFaqPage';
 import FaqAccordion from '../components/FaqAccordion.vue';
 
 const { data, isLoading, hasError, isReady, error, retry } = useFaqPage();
+
+useHead({
+  script: () => {
+    if (!isReady.value || !data.value?.items.length) return [];
+
+    return [
+      {
+        type: 'application/ld+json',
+        innerHTML: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: data.value.items.map((item) => ({
+            '@type': 'Question',
+            name: item.question,
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: item.answer,
+            },
+          })),
+        }),
+      },
+    ];
+  },
+});
 </script>
 
 <template>

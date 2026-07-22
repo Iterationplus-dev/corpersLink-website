@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /signin
+Disallow: /forgot-password
+Disallow: /register
+Disallow: /welcome
+Disallow: /institutions
+Disallow: /book/
+Disallow: /bookings/
+Disallow: /dashboard
+Disallow: /settings
+
+Sitemap: https://corperslink.com/sitemap.xml
