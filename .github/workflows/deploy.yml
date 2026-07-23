@@ -85,6 +85,7 @@ jobs:
           chmod 600 ~/.ssh/config
 
       - name: Upload Release
+        id: upload
         run: |
           STAMP=$(date +%Y%m%d%H%M%S)
 
@@ -115,13 +116,14 @@ jobs:
 
       - name: Health Check
         run: |
+          # Checked against the origin over SSH, not the public https://corperslink.com
+          # URL — Cloudflare blocks the GitHub Actions runner's requests (403) even
+          # though the deployed site itself is healthy, so the public URL isn't a
+          # reliable signal here.
           for i in {1..20}; do
 
-            STATUS=$(curl -fsS \
-              -o /dev/null \
-              -w "%{http_code}" \
-              -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" \
-              https://corperslink.com || true)
+            STATUS=$(ssh deploy-target \
+              "curl -fsS -o /dev/null -w '%{http_code}' -H 'Host: corperslink.com' http://localhost/" || true)
 
             if [ "$STATUS" = "200" ]; then
               echo "Frontend is healthy."
@@ -136,6 +138,10 @@ jobs:
           exit 1
 
       - name: Purge Cloudflare Cache
+        # Runs whenever the release actually made it onto the server, even if the
+        # Health Check step above fails — a wrong assumption in the origin health
+        # probe shouldn't leave Cloudflare serving stale content over a real deploy.
+        if: ${{ !cancelled() && steps.upload.outcome == 'success' }}
         run: |
           curl \
             --fail \
