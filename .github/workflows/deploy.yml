@@ -1,4 +1,4 @@
-name: Deploying CorpersLink Frontend
+name: Deploy CorpersLink Frontend
 
 on:
   push:
