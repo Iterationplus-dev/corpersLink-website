@@ -119,11 +119,15 @@ jobs:
           # Checked against the origin over SSH, not the public https://corperslink.com
           # URL — Cloudflare blocks the GitHub Actions runner's requests (403) even
           # though the deployed site itself is healthy, so the public URL isn't a
-          # reliable signal here.
+          # reliable signal here. Port 80 on the origin 301-redirects to HTTPS, so we
+          # go straight to the local HTTPS vhost instead of following the redirect
+          # (following it would resolve corperslink.com back out through Cloudflare,
+          # reintroducing the same block). -k: the origin's local cert is issued for
+          # the public hostname/Cloudflare Origin CA, not "localhost".
           for i in {1..20}; do
 
             STATUS=$(ssh deploy-target \
-              "curl -fsS -o /dev/null -w '%{http_code}' -H 'Host: corperslink.com' http://localhost/" || true)
+              "curl -fsSk -o /dev/null -w '%{http_code}' -H 'Host: corperslink.com' https://localhost/" || true)
 
             if [ "$STATUS" = "200" ]; then
               echo "Frontend is healthy."
@@ -143,6 +147,9 @@ jobs:
         # probe shouldn't leave Cloudflare serving stale content over a real deploy.
         if: ${{ !cancelled() && steps.upload.outcome == 'success' }}
         run: |
+          ZONE_ID_LEN=$(printf '%s' "${{ secrets.CF_ZONE_ID }}" | wc -c)
+          echo "CF_ZONE_ID length: $ZONE_ID_LEN (a valid zone ID is 32 characters — a mismatch here usually means stray whitespace/newline got saved into the secret)"
+
           curl \
             --fail \
             --silent \
