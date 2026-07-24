@@ -44,7 +44,7 @@ jobs:
       - name: Build Production
         env:
           NODE_ENV: production
-          VITE_API_BASE_URL: https://api.corperslink.com
+          VITE_API_BASE_URL: https://api.corperslink.com/api/v1
           VITE_USE_MOCK_API: "false"
         run: npm run build
 
