@@ -36,7 +36,7 @@ const { data, isLoading, hasError, isReady, error, retry } = useSupportPage();
           </div>
 
           <div class="support-view__contact-card">
-            <div class="support-view__contact-title">Institution transport desk</div>
+            <div class="support-view__contact-title">Support Desk</div>
             <p class="support-view__contact-hours">
               {{ data.contact.institutionName }} · {{ data.contact.hours }}
             </p>

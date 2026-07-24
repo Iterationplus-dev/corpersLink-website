@@ -7,14 +7,14 @@ import { mapSupportContact, mapSupportContent } from './support.mapper';
 describe('mapSupportContact', () => {
   it('maps institution_name to camelCase institutionName', () => {
     const model = mapSupportContact({
-      institution_name: 'University of Lagos',
+      institution_name: 'CorpersLink Nig',
       hours: 'Mon–Fri, 9 AM–5 PM',
       phone: '0700-CORPERSLINK',
-      email: 'transport@unilag.edu.ng',
+      email: 'hello@corperslink.com',
     });
 
-    expect(model.institutionName).toBe('University of Lagos');
-    expect(model.email).toBe('transport@unilag.edu.ng');
+    expect(model.institutionName).toBe('CorpersLink Nig');
+    expect(model.email).toBe('hello@corperslink.com');
   });
 });
 
