@@ -11,10 +11,10 @@ export const supportContentSeed: SupportContentDTO = {
     'What happens if my seat hold expires?',
   ],
   contact: {
-    institution_name: 'University of Lagos',
+    institution_name: 'CorpersLink Nig',
     hours: 'Mon–Fri, 9 AM–5 PM',
     phone: '0700-CORPERSLINK',
-    email: 'transport@unilag.edu.ng',
+    email: 'hello@corperslink.com',
   },
   refund_notice:
     'Refunds and manifest changes are handled by your institution — CorpersLink support cannot alter published fares.',

@@ -62,6 +62,7 @@ const tag = computed(() => {
   font-size: 1rem;
   line-height: 1;
   white-space: nowrap;
+  cursor: pointer;
   transition:
     transform var(--cl-duration-fast) var(--cl-ease-standard),
     box-shadow var(--cl-duration-fast) var(--cl-ease-standard),

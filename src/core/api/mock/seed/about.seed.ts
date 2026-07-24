@@ -25,7 +25,6 @@ export const aboutContentSeed: AboutContentDTO = {
     },
   ],
   stats: [
-    { id: 'founded', label: 'Founded in Lagos', value: '2024' },
     { id: 'institutions', label: 'Partner institutions', value: '64' },
     { id: 'transporters', label: 'Verified transporters', value: '180+' },
     { id: 'camps', label: 'Camps served nationwide', value: '37' },

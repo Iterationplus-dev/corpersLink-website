@@ -43,10 +43,10 @@ async function handleSubmit(): Promise<void> {
   <main class="signin-view">
     <div class="signin-view__grid">
       <div class="signin-view__hero">
-        <div class="signin-view__brand">
+        <router-link to="/" class="signin-view__brand">
           <LogoMark :size="32" />
           <span>CorpersLink</span>
-        </div>
+        </router-link>
         <figure class="signin-view__hero-media">
           <img
             :src="heroImageUrl"
@@ -66,7 +66,7 @@ async function handleSubmit(): Promise<void> {
             Flutterwave, and travel with a confirmed manifest.
           </p>
         </div>
-        <div class="signin-view__hero-footer">© 2026 Iterationplus Technologies Ltd</div>
+        <div class="signin-view__hero-footer">© 2026 CorpersLink Nig Ltd</div>
       </div>
 
       <div class="signin-view__form-side">
@@ -162,6 +162,8 @@ async function handleSubmit(): Promise<void> {
   gap: 0.625rem;
   font-size: 1.1875rem;
   font-weight: 800;
+  color: inherit;
+  text-decoration: none;
 }
 
 .signin-view__hero-media {
